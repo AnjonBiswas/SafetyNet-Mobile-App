@@ -1,0 +1,1023 @@
+{
+	"info": {
+		"_postman_id": "safetynet-parent-child-api",
+		"name": "SafetyNet Parent-Child API",
+		"description": "Complete API collection for SafetyNet Parent-Child monitoring system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Parent Auth",
+			"item": [
+				{
+					"name": "Register Parent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201 || pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data && jsonData.data.token) {",
+									"        pm.environment.set('parent_token', jsonData.data.token);",
+									"        pm.environment.set('parent_id', jsonData.data.parent.id);",
+									"    }",
+									"}",
+									"pm.test('Status code is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"pm.test('Response has success', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('success');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"parent_test@example.com\",\n    \"password\": \"ParentPass123!\",\n    \"password_confirmation\": \"ParentPass123!\",\n    \"phone\": \"+8801700000000\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/parent/register",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "register"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Parent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data && jsonData.data.token) {",
+									"        pm.environment.set('parent_token', jsonData.data.token);",
+									"        pm.environment.set('parent_id', jsonData.data.parent.id);",
+									"    }",
+									"}",
+									"pm.test('Status code is 200', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"pm.test('Response has token', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.data).to.have.property('token');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"parent_test@example.com\",\n    \"password\": \"ParentPass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/parent/login",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "login"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Parent Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/profile",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "profile"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Parent Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John D. Updated\",\n    \"phone\": \"+8801711111111\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/parent/profile",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "profile"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Child Auth",
+			"item": [
+				{
+					"name": "Register Child",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201 || pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data && jsonData.data.token) {",
+									"        pm.environment.set('child_token', jsonData.data.token);",
+									"        pm.environment.set('child_id', jsonData.data.user.id);",
+									"    }",
+									"}",
+									"pm.test('Status code is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"full_name\": \"Child Test User\",\n    \"email\": \"child_test@example.com\",\n    \"password\": \"ChildPass123!\",\n    \"password_confirmation\": \"ChildPass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/register",
+							"host": ["{{base_url}}"],
+							"path": ["register"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Child",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data && jsonData.data.token) {",
+									"        pm.environment.set('child_token', jsonData.data.token);",
+									"        pm.environment.set('child_id', jsonData.data.user.id);",
+									"    }",
+									"}",
+									"pm.test('Status code is 200', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"child_test@example.com\",\n    \"password\": \"ChildPass123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": ["{{base_url}}"],
+							"path": ["login"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Child Linking",
+			"item": [
+				{
+					"name": "Parent Send Link Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data && jsonData.data.id) {",
+									"        pm.environment.set('link_request_id', jsonData.data.id);",
+									"    }",
+									"}",
+									"pm.test('Status code is 200', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"child_email\": \"child_test@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/parent/link/request",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "link", "request"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Child Get Link Requests",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data && jsonData.data.length > 0) {",
+									"        pm.environment.set('link_request_id', jsonData.data[0].id);",
+									"    }",
+									"}",
+									"pm.test('Status code is 200', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{child_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/child/link-requests",
+							"host": ["{{base_url}}"],
+							"path": ["child", "link-requests"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Child Accept Link",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"pm.test('Link is accepted', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{child_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/child/link-requests/{{link_request_id}}/accept",
+							"host": ["{{base_url}}"],
+							"path": ["child", "link-requests", "{{link_request_id}}", "accept"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Parent Get Children List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data && jsonData.data.length > 0) {",
+									"        pm.environment.set('child_id', jsonData.data[0].child_id);",
+									"    }",
+									"}",
+									"pm.test('Status code is 200', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"pm.test('Has children', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.data).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/children",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "children"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Parent Unlink Child",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/children/{{child_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "children", "{{child_id}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Location Tracking",
+			"item": [
+				{
+					"name": "Child Update Location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{child_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"latitude\": 23.8103,\n    \"longitude\": 90.4125,\n    \"battery_level\": 85\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/child/location/update",
+							"host": ["{{base_url}}"],
+							"path": ["child", "location", "update"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Parent Get Child Location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/children/{{child_id}}/location",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "children", "{{child_id}}", "location"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Parent Get Location History",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/children/{{child_id}}/location/history?from_date=2025-01-01&to_date=2025-12-31",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "children", "{{child_id}}", "location", "history"],
+							"query": [
+								{
+									"key": "from_date",
+									"value": "2025-01-01"
+								},
+								{
+									"key": "to_date",
+									"value": "2025-12-31"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. SOS Alerts",
+			"item": [
+				{
+					"name": "Child Trigger SOS",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data && jsonData.data.id) {",
+									"        pm.environment.set('sos_alert_id', jsonData.data.id);",
+									"    }",
+									"}",
+									"pm.test('Status code is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{child_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"latitude\": 23.8103,\n    \"longitude\": 90.4125,\n    \"message\": \"Test SOS from Postman\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/child/sos/trigger",
+							"host": ["{{base_url}}"],
+							"path": ["child", "sos", "trigger"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Parent Get SOS Alerts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data && jsonData.data.length > 0) {",
+									"        pm.environment.set('sos_alert_id', jsonData.data[0].id);",
+									"    }",
+									"}",
+									"pm.test('Status code is 200', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/sos/alerts?status=active",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "sos", "alerts"],
+							"query": [
+								{
+									"key": "status",
+									"value": "active"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Parent Get Alert Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/sos/alerts/{{sos_alert_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "sos", "alerts", "{{sos_alert_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Parent Acknowledge Alert",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/sos/alerts/{{sos_alert_id}}/acknowledge",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "sos", "alerts", "{{sos_alert_id}}", "acknowledge"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Child Cancel SOS",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{child_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"alert_id\": {{sos_alert_id}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/child/sos/cancel",
+							"host": ["{{base_url}}"],
+							"path": ["child", "sos", "cancel"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Parent Resolve Alert",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/sos/alerts/{{sos_alert_id}}/resolve",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "sos", "alerts", "{{sos_alert_id}}", "resolve"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Geofencing",
+			"item": [
+				{
+					"name": "Create Geofence",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data && jsonData.data.id) {",
+									"        pm.environment.set('geofence_id', jsonData.data.id);",
+									"    }",
+									"}",
+									"pm.test('Status code is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"child_id\": {{child_id}},\n    \"name\": \"Home\",\n    \"latitude\": 23.8103,\n    \"longitude\": 90.4125,\n    \"radius\": 150\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/parent/geofences",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "geofences"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Geofences",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/geofences?child_id={{child_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "geofences"],
+							"query": [
+								{
+									"key": "child_id",
+									"value": "{{child_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Geofence",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Home Updated\",\n    \"radius\": 200,\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/parent/geofences/{{geofence_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "geofences", "{{geofence_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Geofence",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/geofences/{{geofence_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "geofences", "{{geofence_id}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "7. Notifications",
+			"item": [
+				{
+					"name": "Get Notifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.success && jsonData.data && jsonData.data.length > 0) {",
+									"        pm.environment.set('notification_id', jsonData.data[0].id);",
+									"    }",
+									"}",
+									"pm.test('Status code is 200', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/notifications",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "notifications"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Notification as Read",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/notifications/{{notification_id}}/read",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "notifications", "{{notification_id}}", "read"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Unread Count",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parent_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/parent/notifications/unread-count",
+							"host": ["{{base_url}}"],
+							"path": ["parent", "notifications", "unread-count"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api",
+			"type": "string"
+		}
+	]
+}
+
